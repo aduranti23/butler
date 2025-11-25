@@ -1,11 +1,12 @@
 import sys
 import gi
+import servicefetcher
 
 gi.require_version("Gtk", "4.0")
 from gi.repository import GLib, Gtk
 
 print("Butler")
-
+#servicefetcher.fetchServices("all")
 class MyApplication(Gtk.Application):
     def __init__(self):
         super().__init__(application_id="com.magicwilbur.Butler")
