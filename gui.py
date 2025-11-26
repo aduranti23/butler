@@ -2,6 +2,7 @@ import gi
 import json
 import service
 import servicefetcher
+import traceback
 
 gi.require_version("Gtk", "4.0")
 from gi.repository import GLib, Gtk
@@ -52,8 +53,22 @@ class Application(Gtk.Application):
         
     def do_activate(self):
         #build window
-        window = MainWindow()
-        window.present()
-
+        try:
+            window = MainWindow()
+            window.present()
+        except Exception as e:
+            print("Error during activation", e)
+            traceback.print_exc()
+            # opzionale: mostra un dialogo di errore all’utente
+            dlg = Gtk.MessageDialog(
+              transient_for=self.window if hasattr(self, "window") else None,
+             flags=0,
+             message_type=Gtk.MessageType.ERROR,
+             buttons=Gtk.ButtonsType.CLOSE,
+             text="Error during start"
+            )
+            dlg.format_secondary_text(str(e))
+            dlg.run()
+            dlg.destroy()
 
 
