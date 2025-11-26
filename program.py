@@ -2,4 +2,5 @@ import sys
 import gui
 
 app = gui.Application()
-app.run(None)
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
