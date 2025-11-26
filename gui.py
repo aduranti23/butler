@@ -31,19 +31,28 @@ class ServiceGrid(Gtk.Box):
             indexRow += 1
         self.append(grid)
 
+class MainWindow(Gtk.ApplicationWindow):
+    def __init__(self, **kargs):
+        super().__init__(**kargs, default_width=400, title="Butler")
+
+        #initialize service grid
+        srvList = servicefetcher.getServiceList("all")
+        srvGridWidget = ServiceGrid(srvList)
+
+        #append widgets to box
+        box = Gtk.CenterBox()
+        self.set_child(box)
+        box.set_start_widget(srvGridWidget)
+
+
 class Application(Gtk.Application):
     def __init__(self):
         super().__init__(application_id=appInfos["applicationId"])
         GLib.set_application_name(appInfos["applicationName"])
         
     def do_activate(self):
-        #initialize grid
-        srvList = servicefetcher.getServiceList("all")
-        srvGridWidget = ServiceGrid(srvList)
-
         #build window
-        window = Gtk.Window(application=self, title="Butler")
-        window.set_child(srvGridWidget)
+        window = MainWindow()
         window.present()
 
 
