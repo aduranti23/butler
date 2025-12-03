@@ -7,7 +7,7 @@ import traceback
 gi.require_version("Gtk", "4.0")
 from gi.repository import GLib, Gtk
 
-with open("config/app.json", mode="r", encoding="utf-8") as file:
+with open("butler/config/app.json", mode="r", encoding="utf-8") as file:
      appInfos = json.load(file)
 
 class ServiceGrid(Gtk.Box):
@@ -33,8 +33,8 @@ class ServiceGrid(Gtk.Box):
         self.append(grid)
 
 class MainWindow(Gtk.ApplicationWindow):
-    def __init__(self, **kargs):
-        super().__init__(**kargs, default_width=400, title="Butler")
+    def __init__(self, **kwargs):
+        super().__init__(application=kwargs.pop("application", None), default_width=400, title="Butler")
 
         #initialize service grid
         srvList = servicefetcher.getServiceList("all")
@@ -54,12 +54,11 @@ class Application(Gtk.Application):
     def do_activate(self):
         #build window
         try:
-            window = MainWindow()
+            window = MainWindow(application=self)
             window.present()
         except Exception as e:
             print("Error during activation", e)
             traceback.print_exc()
-            # opzionale: mostra un dialogo di errore all’utente
             dlg = Gtk.MessageDialog(
               transient_for=self.window if hasattr(self, "window") else None,
              flags=0,
@@ -70,5 +69,3 @@ class Application(Gtk.Application):
             dlg.format_secondary_text(str(e))
             dlg.run()
             dlg.destroy()
-
-
